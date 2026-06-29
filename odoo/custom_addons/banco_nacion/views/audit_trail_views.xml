@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista de lista - Trazabilidad de Auditoría -->
+        <record id="view_audit_trail_entry_tree" model="ir.ui.view">
+            <field name="name">audit.trail.entry.tree</field>
+            <field name="model">audit.trail.entry</field>
+            <field name="arch" type="xml">
+                <tree string="Trazabilidad de Auditoría" default_order="create_date desc">
+                    <field name="create_date"/>
+                    <field name="user_id"/>
+                    <field name="action_type"/>
+                    <field name="model_name"/>
+                    <field name="record_id"/>
+                    <field name="description"/>
+                    <field name="ip_address"/>
+                    <field name="hash_chain"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista de formulario - Auditoría -->
+        <record id="view_audit_trail_entry_form" model="ir.ui.view">
+            <field name="name">audit.trail.entry.form</field>
+            <field name="model">audit.trail.entry</field>
+            <field name="arch" type="xml">
+                <form string="Entrada de Auditoría">
+                    <header>
+                        <button name="action_verify_integrity" string="Verificar Integridad"
+                                type="object" class="btn-primary"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="create_date"/>
+                                <field name="user_id"/>
+                                <field name="action_type"/>
+                                <field name="ip_address"/>
+                            </group>
+                            <group>
+                                <field name="model_name"/>
+                                <field name="record_id"/>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+                        <field name="description" nolabel="1"/>
+                        <notebook>
+                            <page string="Cambios">
+                                <group>
+                                    <field name="old_value" nolabel="1"/>
+                                    <field name="new_value" nolabel="1"/>
+                                </group>
+                                <field name="changes_summary"/>
+                            </page>
+                            <page string="Integridad">
+                                <group>
+                                    <field name="hash_chain"/>
+                                    <field name="previous_entry_id"/>
+                                    <field name="signed"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción de ventana -->
+        <record id="action_audit_trail_entry" model="ir.actions.act_window">
+            <field name="name">Trazabilidad de Auditoría</field>
+            <field name="res_model">audit.trail.entry</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p>Registro de auditoría con encadenamiento de hashes para garantizar la integridad de los datos.</p>
+                <p>Todas las acciones críticas del sistema son registradas con trazabilidad completa.</p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

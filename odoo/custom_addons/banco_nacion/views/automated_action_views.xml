@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista de lista - Reglas de Acción Automatizada -->
+        <record id="view_automated_action_rule_tree" model="ir.ui.view">
+            <field name="name">automated.action.rule.tree</field>
+            <field name="model">automated.action.rule</field>
+            <field name="arch" type="xml">
+                <tree string="Reglas de Acción Automatizada" default_order="sequence">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="action_type"/>
+                    <field name="trigger_type"/>
+                    <field name="active" widget="boolean_toggle"/>
+                    <field name="last_execution_date"/>
+                    <field name="last_execution_state" decoration-success="last_execution_state == 'success'" decoration-danger="last_execution_state == 'failed'"/>
+                    <field name="total_executions"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista de formulario - Reglas -->
+        <record id="view_automated_action_rule_form" model="ir.ui.view">
+            <field name="name">automated.action.rule.form</field>
+            <field name="model">automated.action.rule</field>
+            <field name="arch" type="xml">
+                <form string="Regla de Acción Automatizada">
+                    <header>
+                        <button name="execute_action" string="Ejecutar Ahora" type="object"
+                                class="btn-primary" invisible="active != True"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1><field name="name"/></h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="action_type"/>
+                                <field name="trigger_type"/>
+                                <field name="description"/>
+                                <field name="sequence"/>
+                            </group>
+                            <group>
+                                <field name="model_id"/>
+                                <field name="model_name"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Condiciones">
+                                <group>
+                                    <field name="condition_field"/>
+                                    <field name="condition_operator"/>
+                                    <field name="condition_value"/>
+                                </group>
+                            </page>
+                            <page string="Ejecución">
+                                <group>
+                                    <field name="action_type_exec"/>
+                                    <field name="server_action_id"/>
+                                    <field name="python_code" nolabel="1" colspan="2"/>
+                                </group>
+                            </page>
+                            <page string="Notificaciones">
+                                <group>
+                                    <field name="notify_on_success"/>
+                                    <field name="notify_on_failure"/>
+                                    <field name="notify_user_ids" widget="many2many_tags"/>
+                                    <field name="email_template_id"/>
+                                </group>
+                            </page>
+                            <page string="Control">
+                                <group>
+                                    <group>
+                                        <field name="max_retries"/>
+                                        <field name="retry_delay_minutes"/>
+                                        <field name="timeout_seconds"/>
+                                        <field name="concurrent_execution"/>
+                                    </group>
+                                    <group>
+                                        <field name="last_execution_date"/>
+                                        <field name="last_execution_state"/>
+                                        <field name="total_executions"/>
+                                        <field name="success_count"/>
+                                        <field name="failure_count"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Registro de Ejecuciones">
+                                <field name="log_ids">
+                                    <tree>
+                                        <field name="create_date"/>
+                                        <field name="action_type"/>
+                                        <field name="state" decoration-success="state == 'success'"
+                                               decoration-danger="state == 'failed'"/>
+                                        <field name="execution_date"/>
+                                        <field name="duration_seconds"/>
+                                        <field name="error_message"/>
+                                    </tree>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción de ventana -->
+        <record id="action_automated_action_rule" model="ir.actions.act_window">
+            <field name="name">Acciones Automatizadas</field>
+            <field name="res_model">automated.action.rule</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+        <!-- Vista de lista - Log de Acciones -->
+        <record id="view_automated_action_log_tree" model="ir.ui.view">
+            <field name="name">automated.action.log.tree</field>
+            <field name="model">automated.action.log</field>
+            <field name="arch" type="xml">
+                <tree string="Registro de Acciones Automatizadas">
+                    <field name="create_date"/>
+                    <field name="rule_name"/>
+                    <field name="action_type"/>
+                    <field name="state" decoration-success="state == 'success'"
+                           decoration-danger="state == 'failed'"
+                           decoration-warning="state == 'warning'"/>
+                    <field name="executed_by"/>
+                    <field name="execution_date"/>
+                    <field name="duration_seconds"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Acción de ventana - Log -->
+        <record id="action_automated_action_log" model="ir.actions.act_window">
+            <field name="name">Historial de Automatizaciones</field>
+            <field name="res_model">automated.action.log</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+    </data>
+</odoo>

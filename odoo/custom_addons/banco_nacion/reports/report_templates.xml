@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Template de Reporte SBS en PDF -->
+        <template id="report_sbs_regulatory_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.internal_layout">
+                        <div class="page" style="font-family: 'Courier New', monospace;">
+                            <div class="header" style="text-align: center; border-bottom: 2px solid #003366; padding-bottom: 10px;">
+                                <h1 style="color: #003366; margin: 0;">BANCO DE LA NACIÓN</h1>
+                                <h3 style="color: #666; margin: 5px 0;">Reporte Regulatorio - Superintendencia de Banca, Seguros y AFP</h3>
+                            </div>
+
+                            <div style="margin: 15px 0;">
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <tr>
+                                        <td style="width: 50%;"><strong>Código SBS:</strong> <t t-esc="doc.code"/></td>
+                                        <td style="width: 50%; text-align: right;"><strong>Versión:</strong> <t t-esc="doc.version"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tipo:</strong> <t t-esc="dict(doc._fields['report_type'].selection).get(doc.report_type)"/></td>
+                                        <td style="text-align: right;"><strong>Estado:</strong> <t t-esc="dict(doc._fields['state'].selection).get(doc.state)"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Período:</strong> <t t-esc="doc.date_from"/> - <t t-esc="doc.date_to"/></td>
+                                        <td style="text-align: right;"><strong>Generado:</strong> <t t-esc="doc.generation_date"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div style="border: 1px solid #003366; padding: 10px; margin: 15px 0;">
+                                <h3 style="color: #003366; margin-top: 0;">Detalle del Reporte</h3>
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background-color: #003366; color: white;">
+                                            <th style="padding: 8px; border: 1px solid #003366; text-align: left;">Código</th>
+                                            <th style="padding: 8px; border: 1px solid #003366; text-align: left;">Descripción</th>
+                                            <th style="padding: 8px; border: 1px solid #003366; text-align: right;">Monto</th>
+                                            <th style="padding: 8px; border: 1px solid #003366; text-align: left;">Cuenta</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="doc.report_lines" t-as="line">
+                                            <td style="padding: 6px; border: 1px solid #ccc;">
+                                                <t t-esc="line.code"/>
+                                            </td>
+                                            <td style="padding: 6px; border: 1px solid #ccc;">
+                                                <t t-esc="line.description"/>
+                                            </td>
+                                            <td style="padding: 6px; border: 1px solid #ccc; text-align: right;">
+                                                <t t-esc="line.amount"/>
+                                            </td>
+                                            <td style="padding: 6px; border: 1px solid #ccc;">
+                                                <t t-esc="line.account_code or ''"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background-color: #f0f0f0; font-weight: bold;">
+                                            <td colspan="2" style="padding: 8px; border: 1px solid #003366; text-align: right;">TOTAL:</td>
+                                            <td style="padding: 8px; border: 1px solid #003366; text-align: right;">
+                                                <t t-esc="doc.total_amount"/>
+                                            </td>
+                                            <td style="padding: 8px; border: 1px solid #003366;"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+
+                            <div style="margin: 15px 0; padding: 10px; background-color: #f9f9f9; border-left: 4px solid #003366;">
+                                <strong>Base Legal:</strong>
+                                <p t-esc="doc.regulatory_basis or 'Resolución SBS aplicable'"/>
+                            </div>
+
+                            <div style="margin-top: 30px; font-size: 10px; color: #666; border-top: 1px solid #ccc; padding-top: 10px;">
+                                <p>Este reporte cumple con los requisitos de la Superintendencia de Banca, Seguros y AFP (SBS).</p>
+                                <p>Código de Entidad: <t t-esc="doc.env['ir.config_parameter'].get_param('sbs_entity_code', '0001')"/></p>
+                                <p>Hash de Integridad: <t t-esc="doc.audit_hash or 'No generado'"/></p>
+                                <p style="text-align: center;">Banco de la Nación - Todos los derechos reservados</p>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+        <!-- Template de Alerta Regulatoria -->
+        <template id="report_alert_template">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="doc">
+                    <t t-call="web.internal_layout">
+                        <div class="page">
+                            <div style="text-align: center; border-bottom: 2px solid #d9534f; padding: 10px;">
+                                <h1 style="color: #d9534f;">ALERTA REGULATORIA</h1>
+                                <h3>Banco de la Nación - Sistema de Cumplimiento</h3>
+                            </div>
+                            <div style="margin: 20px 0;">
+                                <p><strong>Prioridad:</strong> <t t-esc="doc.priority"/></p>
+                                <p><strong>Tipo:</strong> <t t-esc="doc.alert_type"/></p>
+                                <p><strong>Descripción:</strong> <t t-esc="doc.description"/></p>
+                                <p><strong>Registro Asociado:</strong> <t t-esc="doc.record_name or ''"/></p>
+                                <p><strong>Fecha:</strong> <t t-esc="doc.create_date"/></p>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,53 @@
+<!--
+   Wazuh Decoder - Odoo Banco de la Nación
+   ==========================================
+   Decodificador para logs de Odoo con formato estructurado.
+-->
+<decoder name="odoo-log">
+    <program_name>odoo</program_name>
+</decoder>
+
+<decoder name="odoo-log-specific">
+    <parent>odoo-log</parent>
+    <regex>(\w+) (\S+) (\S+) (\S+) (\S+) (\S+) (\S+)</regex>
+    <order>level, module, source, message</order>
+</decoder>
+
+<!-- Decoder para eventos de auditoría de Odoo -->
+<decoder name="odoo-audit">
+    <program_name>odoo</program_name>
+    <regex>WARNING audit: (\S+) (\S+) (\S+)</regex>
+    <order>audit_action, audit_model, audit_record</order>
+</decoder>
+
+<!-- Decoder para forward SIEM desde Odoo -->
+<decoder name="odoo-siem-forward">
+    <program_name>odoo</program_name>
+    <prematch>WAZUH_FORWARD:</prematch>
+    <regex>WAZUH_FORWARD: (\S+)</regex>
+    <order>siem_data</order>
+</decoder>
+
+<!-- Decoder para eventos regulatorios -->
+<decoder name="odoo-regulatory">
+    <program_name>odoo</program_name>
+    <prematch>SIEM ALERT:|SIEM FORWARD:</prematch>
+    <regex>(SIEM \w+): (\S+)</regex>
+    <order>siem_event_type, siem_event_data</order>
+</decoder>
+
+<!-- Decoder para acciones automatizadas -->
+<decoder name="odoo-automation">
+    <program_name>odoo</program_name>
+    <prematch>Ejecutando regla|Acción automatizada</prematch>
+    <regex>Ejecutando regla (automated|automatizada): (\S+)</regex>
+    <order>automation_type, automation_name</order>
+</decoder>
+
+<!-- Decoder para errores críticos -->
+<decoder name="odoo-critical-error">
+    <program_name>odoo</program_name>
+    <prematch>CRITICAL|ERROR</prematch>
+    <regex>(CRITICAL|ERROR): (\S+)</regex>
+    <order>error_severity, error_message</order>
+</decoder>

@@ -1,0 +1,30 @@
+# Environment
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+
+# Odoo
+volumes/
+!volumes/.gitkeep
+
+# Docker
+*.log
+
+# SSL certificates (self-generated)
+nginx/ssl/
+!nginx/ssl/.gitkeep
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Wazuh
+wazuh/agent/wazuh_repo.gpg

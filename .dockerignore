@@ -1,0 +1,6 @@
+volumes/
+.git/
+.gitignore
+.env
+nginx/ssl/
+*.md

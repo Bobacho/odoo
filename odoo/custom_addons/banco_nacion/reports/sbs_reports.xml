@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Reporte PDF - Reporte SBS -->
+        <record id="report_sbs_regulatory_pdf" model="ir.actions.report">
+            <field name="name">Reporte Regulatorio SBS (PDF)</field>
+            <field name="model">sbs.regulatory.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">banco_nacion.report_sbs_regulatory_template</field>
+            <field name="report_file">banco_nacion.report_sbs_regulatory_template</field>
+            <field name="binding_model_id" ref="model_sbs_regulatory_report"/>
+            <field name="binding_type">report</field>
+            <field name="print_report_name">'SBS_%s_%s' % (object.code, object.date_from)</field>
+        </record>
+
+        <!-- Reporte HTML - Vista previa -->
+        <record id="report_sbs_regulatory_html" model="ir.actions.report">
+            <field name="name">Vista Previa Reporte SBS</field>
+            <field name="model">sbs.regulatory.report</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">banco_nacion.report_sbs_regulatory_template</field>
+            <field name="report_file">banco_nacion.report_sbs_regulatory_template</field>
+        </record>
+
+        <!-- Reporte PDF - Alerta Regulatoria -->
+        <record id="report_alert_regulatory_pdf" model="ir.actions.report">
+            <field name="name">Reporte de Alerta Regulatoria</field>
+            <field name="model">alert.rule.instance</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">banco_nacion.report_alert_template</field>
+            <field name="report_file">banco_nacion.report_alert_template</field>
+        </record>
+
+    </data>
+</odoo>

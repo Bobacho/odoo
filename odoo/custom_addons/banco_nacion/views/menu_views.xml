@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Menú principal - SBS Regulatorio -->
+        <menuitem id="menu_sbs_root"
+                  name="SBS Regulatorio"
+                  sequence="90"
+                  web_icon="banco_nacion,static/description/icon.png"/>
+
+        <!-- Submenú - Reportes -->
+        <menuitem id="menu_sbs_reports"
+                  name="Reportes SBS"
+                  parent="menu_sbs_root"
+                  sequence="10"/>
+        <menuitem id="menu_sbs_reports_list"
+                  name="Reportes Regulatorios"
+                  parent="menu_sbs_reports"
+                  action="action_sbs_regulatory_report"
+                  sequence="10"/>
+
+        <!-- Submenú - Automatizaciones -->
+        <menuitem id="menu_sbs_automation"
+                  name="Automatizaciones"
+                  parent="menu_sbs_root"
+                  sequence="20"
+                  groups="group_automation_admin"/>
+        <menuitem id="menu_sbs_automation_rules"
+                  name="Reglas de Automatización"
+                  parent="menu_sbs_automation"
+                  action="action_automated_action_rule"
+                  sequence="10"/>
+        <menuitem id="menu_sbs_automation_log"
+                  name="Historial de Ejecución"
+                  parent="menu_sbs_automation"
+                  action="action_automated_action_log"
+                  sequence="20"/>
+
+        <!-- Submenú - Alertas -->
+        <menuitem id="menu_sbs_alerts"
+                  name="Alertas Regulatorias"
+                  parent="menu_sbs_root"
+                  sequence="30"
+                  groups="group_compliance_officer"/>
+
+        <!-- Submenú - Auditoría -->
+        <menuitem id="menu_sbs_audit"
+                  name="Auditoría"
+                  parent="menu_sbs_root"
+                  sequence="40"
+                  groups="group_sbs_auditor"/>
+        <menuitem id="menu_sbs_audit_trail"
+                  name="Trazabilidad"
+                  parent="menu_sbs_audit"
+                  action="action_audit_trail_entry"
+                  sequence="10"/>
+
+        <!-- Submenú - Configuración -->
+        <menuitem id="menu_sbs_config"
+                  name="Configuración"
+                  parent="menu_sbs_root"
+                  sequence="99"
+                  groups="base.group_system"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sbs_report_admin,sbs.report.admin,model_sbs_regulatory_report,group_sbs_admin,1,1,1,1
+access_sbs_report_analyst,sbs.report.analyst,model_sbs_regulatory_report,group_sbs_analyst,1,1,1,0
+access_sbs_report_auditor,sbs.report.auditor,model_sbs_regulatory_report,group_sbs_auditor,1,0,0,0
+access_sbs_report_line_admin,sbs.report.line.admin,model_sbs_report_line,group_sbs_admin,1,1,1,1
+access_sbs_report_line_analyst,sbs.report.line.analyst,model_sbs_report_line,group_sbs_analyst,1,0,0,0
+access_automated_action_log_admin,auto.action.log.admin,model_automated_action_log,group_automation_admin,1,1,1,1
+access_automated_action_log_auditor,auto.action.log.auditor,model_automated_action_log,group_sbs_auditor,1,0,0,0
+access_audit_trail_admin,audit.trail.admin,model_audit_trail_entry,group_sbs_admin,1,0,0,0
+access_audit_trail_auditor,audit.trail.auditor,model_audit_trail_entry,group_sbs_auditor,1,0,0,0
+access_audit_trail_compliance,audit.trail.compliance,model_audit_trail_entry,group_compliance_officer,1,0,0,0
+access_alert_rule_admin,alert.rule.admin,model_alert_rule,group_sbs_admin,1,1,1,1
+access_alert_rule_compliance,alert.rule.compliance,model_alert_rule,group_compliance_officer,1,1,1,0
+access_wazuh_event,wazuh.event.access,model_wazuh_siem_event,group_sbs_auditor,1,0,0,0
+access_wazuh_event_admin,wazuh.event.admin,model_wazuh_siem_event,group_sbs_admin,1,1,0,0

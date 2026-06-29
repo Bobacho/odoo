@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ========================================== -->
+        <!-- DATOS REGULATORIOS SBS                      -->
+        <!-- ========================================== -->
+
+        <!-- Tipos de Reporte SBS -->
+        <record id="sbs_report_type_financial" model="sbs.regulatory.report">
+            <field name="name">Estados Financieros Básicos</field>
+            <field name="code">SBS-FIN-001</field>
+            <field name="report_type">financial_statements</field>
+            <field name="period_type">monthly</field>
+            <field name="date_from" eval="(datetime.now() + relativedelta(months=-1, day=1)).strftime('%Y-%m-%d')"/>
+            <field name="date_to" eval="datetime.now().strftime('%Y-%m-%d')"/>
+            <field name="state">draft</field>
+            <field name="regulatory_basis">Resolución SBS N° 1234-2023 - Estados Financieros para Entidades Bancarias</field>
+        </record>
+    </data>
+</odoo>

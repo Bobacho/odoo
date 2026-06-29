@@ -1,0 +1,148 @@
+<!--
+   Wazuh Rules - Odoo Banco de la Nación
+   ==========================================
+   Reglas de detección para eventos de Odoo.
+-->
+<group name="odoo, banco_nacion, regulatory">
+
+    <!-- Regla base: Evento Odoo detectado -->
+    <rule id="100001" level="3">
+        <decoded_as>odoo-log</decoded_as>
+        <description>Evento de log de Odoo detectado</description>
+    </rule>
+
+    <!-- Regla: Evento de auditoría -->
+    <rule id="100002" level="5">
+        <decoded_as>odoo-audit</decoded_as>
+        <description>Evento de auditoría en Odoo</description>
+        <field name="audit_action">write|create|unlink</field>
+    </rule>
+
+    <!-- Regla: Forwarding a SIEM -->
+    <rule id="100003" level="4">
+        <decoded_as>odoo-siem-forward</decoded_as>
+        <description>Evento reenviado desde Odoo a SIEM</description>
+    </rule>
+
+    <!-- Regla: Alerta regulatoria -->
+    <rule id="100004" level="8">
+        <decoded_as>odoo-regulatory</decoded_as>
+        <match>SIEM ALERT</match>
+        <description>Alerta regulatoria generada por Odoo</description>
+        <options>no_full_log</options>
+        <group>regulatory, alert,</group>
+    </rule>
+
+    <!-- Regla: Acción automatizada -->
+    <rule id="100005" level="5">
+        <decoded_as>odoo-automation</decoded_as>
+        <description>Acción automatizada ejecutada en Odoo</description>
+    </rule>
+
+    <!-- Regla: Error crítico en Odoo -->
+    <rule id="100006" level="10">
+        <decoded_as>odoo-critical-error</decoded_as>
+        <description>Error crítico en Odoo Banco de la Nación</description>
+        <group>error, critical,</group>
+        <alert>true</alert>
+    </rule>
+
+    <!-- Regla: Reporte SBS generado -->
+    <rule id="100007" level="6">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>Reporte.*SBS.*generado|SBS.*report.*generated</match>
+        <description>Reporte regulatorio SBS generado desde Odoo</description>
+        <group>regulatory, sbs, report,</group>
+    </rule>
+
+    <!-- Regla: Intento de acceso no autorizado -->
+    <rule id="100008" level="7">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>login failed|access denied|unauthorized</match>
+        <description>Intento de acceso no autorizado en Odoo</description>
+        <group>authentication, security,</group>
+    </rule>
+
+    <!-- Regla: Múltiples intentos de login fallidos -->
+    <rule id="100009" level="9" frequency="5" timeframe="300">
+        <if_matched_sid>100008</if_matched_sid>
+        <description>Múltiples intentos de acceso fallidos en Odoo - Posible ataque de fuerza bruta</description>
+        <group>authentication, brute_force, attack,</group>
+        <alert>true</alert>
+    </rule>
+
+    <!-- Regla: Cambio de configuración sensible -->
+    <rule id="100010" level="8">
+        <decoded_as>odoo-audit</decoded_as>
+        <field name="audit_action">config_change|security_rule_change</field>
+        <description>Cambio en configuración sensible de Odoo</description>
+        <group>configuration, security,</group>
+    </rule>
+
+    <!-- Regla: Exportación de datos -->
+    <rule id="100011" level="6">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>export|data_export|download</match>
+        <description>Exportación de datos desde Odoo</description>
+        <group>data_export, audit,</group>
+    </rule>
+
+    <!-- Regla: Transacción PLA/FT detectada -->
+    <rule id="100012" level="10">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>AML|PLA/FT|lavado|fraud|suspicious</match>
+        <description>Posible actividad de lavado de activos detectada en Odoo</description>
+        <group>aml, fraud, compliance,</group>
+        <alert>true</alert>
+    </rule>
+
+    <!-- Regla: Reporte enviado a SBS -->
+    <rule id="100013" level="5">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>enviado a SBS|submitted to SBS</match>
+        <description>Reporte enviado a la SBS desde Odoo</description>
+        <group>regulatory, sbs, submission,</group>
+    </rule>
+
+    <!-- Regla: Conexión de base de datos -->
+    <rule id="100014" level="4">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>database|connection|postgres</match>
+        <description>Conexión a base de datos desde Odoo</description>
+        <group>database,</group>
+    </rule>
+
+    <!-- Regla: Sesión de usuario -->
+    <rule id="100015" level="3">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>session|login|logout</match>
+        <description>Evento de sesión de usuario en Odoo</description>
+        <group>session, authentication,</group>
+    </rule>
+
+    <!-- Regla: Inicio de sesión exitoso -->
+    <rule id="100016" level="4">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>login successful|logged in</match>
+        <description>Inicio de sesión exitoso en Odoo</description>
+        <group>authentication, success,</group>
+    </rule>
+
+    <!-- Regla: Acción administrativa -->
+    <rule id="100017" level="6">
+        <decoded_as>odoo-audit</decoded_as>
+        <field name="audit_action">admin|system|config</field>
+        <description>Acción administrativa en Odoo</description>
+        <group>administration, audit,</group>
+    </rule>
+
+    <!-- Regla: Integridad de auditoría comprometida -->
+    <rule id="100018" level="12">
+        <decoded_as>odoo-log-specific</decoded_as>
+        <match>ALERTA DE INTEGRIDAD|hash.*invalid|cadena.*alterada</match>
+        <description>¡POSIBLE COMPROMISO DE INTEGRIDAD DE AUDITORÍA EN ODOO!</description>
+        <group>integrity, security, critical,</group>
+        <alert>true</alert>
+    </rule>
+
+</group>

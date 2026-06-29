@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ========================================== -->
+        <!-- ACCIONES AUTOMATIZADAS BANCO DE LA NACIÓN   -->
+        <!-- ========================================== -->
+
+        <!-- Regla 1: Conciliación Bancaria Diaria -->
+        <record id="automated_action_daily_reconciliation" model="automated.action.rule">
+            <field name="name">Conciliación Bancaria Diaria</field>
+            <field name="description">Ejecuta la conciliación bancaria automática cada día hábil a las 8:00 PM</field>
+            <field name="sequence">10</field>
+            <field name="active">True</field>
+            <field name="action_type">reconciliation</field>
+            <field name="trigger_type">scheduled</field>
+            <field name="notify_on_success">False</field>
+            <field name="notify_on_failure">True</field>
+            <field name="max_retries">3</field>
+        </record>
+
+        <!-- Regla 2: Reporte SBS Mensual Automático -->
+        <record id="automated_action_monthly_sbs_report" model="automated.action.rule">
+            <field name="name">Reporte SBS Mensual Automático</field>
+            <field name="description">Genera automáticamente el reporte SBS de estados financieros el primer día de cada mes</field>
+            <field name="sequence">20</field>
+            <field name="active">True</field>
+            <field name="action_type">sbs_report</field>
+            <field name="trigger_type">scheduled</field>
+            <field name="notify_on_success">True</field>
+            <field name="notify_on_failure">True</field>
+            <field name="max_retries">3</field>
+        </record>
+
+        <!-- Regla 3: Verificación PLA/FT Automática -->
+        <record id="automated_action_aml_check" model="automated.action.rule">
+            <field name="name">Verificación PLA/FT - Transacciones Mayoristas</field>
+            <field name="description">Ejecuta verificación de prevención de lavado de activos en transacciones > S/ 10,000</field>
+            <field name="sequence">30</field>
+            <field name="active">True</field>
+            <field name="action_type">aml_check</field>
+            <field name="trigger_type">on_write</field>
+            <field name="model_id" ref="account.model_account_move"/>
+            <field name="condition_field">amount_total</field>
+            <field name="condition_operator">></field>
+            <field name="condition_value">10000</field>
+            <field name="notify_on_success">False</field>
+            <field name="notify_on_failure">True</field>
+            <field name="notify_user_ids" eval="[(4, ref('base.user_root'))]"/>
+        </record>
+
+        <!-- Regla 4: Verificación de Cumplimiento Normativo -->
+        <record id="automated_action_compliance_check" model="automated.action.rule">
+            <field name="name">Verificación de Cumplimiento Normativo SBS</field>
+            <field name="description">Evalúa el cumplimiento de límites regulatorios SBS</field>
+            <field name="sequence">40</field>
+            <field name="active">True</field>
+            <field name="action_type">compliance_check</field>
+            <field name="trigger_type">scheduled</field>
+            <field name="notify_on_failure">True</field>
+            <field name="max_retries">2</field>
+        </record>
+
+        <!-- Regla 5: Cálculo de Provisiones -->
+        <record id="automated_action_provision_calc" model="automated.action.rule">
+            <field name="name">Cálculo de Provisiones - Cartera Crediticia</field>
+            <field name="description">Calcula provisiones según clasificación SBS de cartera crediticia</field>
+            <field name="sequence">50</field>
+            <field name="active">True</field>
+            <field name="action_type">provision_calc</field>
+            <field name="trigger_type">scheduled</field>
+        </record>
+
+        <!-- Regla 6: Generación de Alertas de Tesorería -->
+        <record id="automated_action_treasury_alert" model="automated.action.rule">
+            <field name="name">Alerta de Tesorería - Límite de Liquidez</field>
+            <field name="description">Genera alerta cuando la liquidez cae por debajo del ratio mínimo regulatorio</field>
+            <field name="sequence">60</field>
+            <field name="active">True</field>
+            <field name="action_type">treasury_alert</field>
+            <field name="trigger_type">condition</field>
+        </record>
+
+        <!-- Regla 7: Reporte Diario de Operaciones -->
+        <record id="automated_action_daily_operations" model="automated.action.rule">
+            <field name="name">Reporte Diario de Operaciones</field>
+            <field name="description">Genera reporte diario de operaciones para envío a SBS</field>
+            <field name="sequence">70</field>
+            <field name="active">True</field>
+            <field name="action_type">sbs_report</field>
+            <field name="trigger_type">scheduled</field>
+            <field name="notify_on_success">True</field>
+            <field name="notify_on_failure">True</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista de lista - Reportes SBS -->
+        <record id="view_sbs_regulatory_report_tree" model="ir.ui.view">
+            <field name="name">sbs.regulatory.report.tree</field>
+            <field name="model">sbs.regulatory.report</field>
+            <field name="arch" type="xml">
+                <tree string="Reportes Regulatorios SBS" default_order="create_date desc">
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="report_type"/>
+                    <field name="period_type"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="state" widget="badge" decoration-success="state == 'generated'" decoration-info="state == 'validated'" decoration-warning="state == 'submitted'" decoration-danger="state in ('rejected', 'cancelled')"/>
+                    <field name="total_amount" sum="Total" widget="monetary"/>
+                    <field name="total_lines"/>
+                    <field name="version"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista de formulario - Reportes SBS -->
+        <record id="view_sbs_regulatory_report_form" model="ir.ui.view">
+            <field name="name">sbs.regulatory.report.form</field>
+            <field name="model">sbs.regulatory.report</field>
+            <field name="arch" type="xml">
+                <form string="Reporte Regulatorio SBS">
+                    <header>
+                        <button name="action_generate" string="Generar Reporte" type="object"
+                                invisible="state not in ('draft',)" class="btn-primary"/>
+                        <button name="action_validate" string="Validar Reporte" type="object"
+                                invisible="state not in ('generated',)" class="btn-success"/>
+                        <button name="action_submit_to_sbs" string="Enviar a SBS" type="object"
+                                invisible="state not in ('validated',)" class="btn-primary"/>
+                        <button name="action_acknowledge" string="Acusar Recibo SBS" type="object"
+                                invisible="state not in ('submitted',)" class="btn-info"/>
+                        <button name="action_reject" string="Rechazar" type="object"
+                                invisible="state not in ('submitted',)" class="btn-danger"/>
+                        <button name="action_draft" string="Volver a Borrador" type="object"
+                                invisible="state not in ('generated','validated','rejected')" class="btn-secondary"/>
+                        <button name="action_cancel" string="Anular" type="object"
+                                invisible="state not in ('draft','generated','validated','rejected')" class="btn-danger"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,generated,validated,submitted,acknowledged"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                            <group>
+                                <field name="code"/>
+                                <field name="report_type"/>
+                                <field name="period_type"/>
+                                <field name="regulatory_basis" colspan="2"/>
+                            </group>
+                        </div>
+                        <notebook>
+                            <page string="Período y Estado">
+                                <group>
+                                    <group>
+                                        <field name="date_from"/>
+                                        <field name="date_to"/>
+                                        <field name="company_id" options="{'no_create': True}"/>
+                                        <field name="currency_id"/>
+                                    </group>
+                                    <group>
+                                        <field name="state"/>
+                                        <field name="version"/>
+                                        <field name="generation_date"/>
+                                        <field name="validation_date"/>
+                                        <field name="submission_date"/>
+                                        <field name="validated_by"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Líneas del Reporte">
+                                <group>
+                                    <group>
+                                        <field name="total_lines"/>
+                                        <field name="total_amount" widget="monetary"/>
+                                    </group>
+                                </group>
+                                <field name="report_lines">
+                                    <tree string="Líneas" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="code"/>
+                                        <field name="description"/>
+                                        <field name="amount" sum="Total"/>
+                                        <field name="account_code"/>
+                                        <field name="account_id"/>
+                                        <field name="is_anomaly" widget="boolean_toggle"/>
+                                        <field name="notes"/>
+                                    </tree>
+                                </field>
+                            </page>
+                            <page string="Archivo Generado">
+                                <group>
+                                    <field name="file_format"/>
+                                    <field name="file_filename"/>
+                                    <field name="file_generated" filename="file_filename"/>
+                                    <field name="audit_hash"/>
+                                </group>
+                            </page>
+                            <page string="Alertas" groups="group_compliance_officer">
+                                <field name="alert_ids"/>
+                                <group>
+                                    <field name="has_anomalies"/>
+                                </group>
+                            </page>
+                            <page string="Notas">
+                                <field name="notes" nolabel="1"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de búsqueda - Reportes SBS -->
+        <record id="view_sbs_regulatory_report_search" model="ir.ui.view">
+            <field name="name">sbs.regulatory.report.search</field>
+            <field name="model">sbs.regulatory.report</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Reporte SBS">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="report_type"/>
+                    <field name="state"/>
+                    <separator/>
+                    <filter name="filter_draft" string="Borrador" domain="[('state','=','draft')]"/>
+                    <filter name="filter_generated" string="Generados" domain="[('state','=','generated')]"/>
+                    <filter name="filter_validated" string="Validados" domain="[('state','=','validated')]"/>
+                    <filter name="filter_submitted" string="Enviados a SBS" domain="[('state','=','submitted')]"/>
+                    <separator/>
+                    <filter name="filter_monthly" string="Mensual" domain="[('period_type','=','monthly')]"/>
+                    <filter name="filter_quarterly" string="Trimestral" domain="[('period_type','=','quarterly')]"/>
+                    <group expand="0" string="Agrupar por">
+                        <filter name="group_type" string="Tipo" context="{'group_by':'report_type'}"/>
+                        <filter name="group_state" string="Estado" context="{'group_by':'state'}"/>
+                        <filter name="group_period" string="Periodicidad" context="{'group_by':'period_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Vista de lista - Líneas de Reporte -->
+        <record id="view_sbs_report_line_tree" model="ir.ui.view">
+            <field name="name">sbs.report.line.tree</field>
+            <field name="model">sbs.report.line</field>
+            <field name="arch" type="xml">
+                <tree string="Líneas de Reporte SBS">
+                    <field name="sequence"/>
+                    <field name="code"/>
+                    <field name="description"/>
+                    <field name="amount" sum="Total"/>
+                    <field name="account_code"/>
+                    <field name="is_anomaly" decoration-danger="is_anomaly"/>
+                    <field name="report_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Acciones de ventana -->
+        <record id="action_sbs_regulatory_report" model="ir.actions.act_window">
+            <field name="name">Reportes SBS</field>
+            <field name="res_model">sbs.regulatory.report</field>
+            <field name="view_mode">tree,form,graph,pivot</field>
+            <field name="search_view_id" ref="view_sbs_regulatory_report_search"/>
+            <field name="help" type="html">
+                <p>Gestión de Reportes Regulatorios para la Superintendencia de Banca, Seguros y AFP (SBS).</p>
+                <p>Genere, valide y envíe los reportes requeridos por la normativa peruana.</p>
+            </field>
+        </record>
+
+        <!-- Vista de gráfico - Reportes -->
+        <record id="view_sbs_regulatory_report_graph" model="ir.ui.view">
+            <field name="name">sbs.regulatory.report.graph</field>
+            <field name="model">sbs.regulatory.report</field>
+            <field name="arch" type="xml">
+                <graph string="Reportes por Período" type="bar">
+                    <field name="date_from" interval="month"/>
+                    <field name="total_amount" type="measure"/>
+                    <field name="report_type"/>
+                </graph>
+            </field>
+        </record>
+
+        <!-- Vista pivot -->
+        <record id="view_sbs_regulatory_report_pivot" model="ir.ui.view">
+            <field name="name">sbs.regulatory.report.pivot</field>
+            <field name="model">sbs.regulatory.report</field>
+            <field name="arch" type="xml">
+                <pivot string="Reportes SBS">
+                    <field name="report_type" type="row"/>
+                    <field name="period_type" type="col"/>
+                    <field name="total_amount" type="measure"/>
+                    <field name="total_lines" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+    </data>
+</odoo>
